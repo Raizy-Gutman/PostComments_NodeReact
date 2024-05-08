@@ -92,7 +92,7 @@ const FinallRegister = () => {
     )
   } else {
     return (
-      <div>
+      <div className='finallregister'>
         <p>Hello, please fill out the form</p>
         <form >
           <label>Enter your name:</label>

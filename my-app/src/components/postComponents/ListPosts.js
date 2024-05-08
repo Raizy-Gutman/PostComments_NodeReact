@@ -48,39 +48,41 @@ const ListPosts = ({ posts, posts2, setPosts2, addPost, updatePost, deletePost, 
 
     return (
         <div>
-            <div>
-                <label htmlFor="searchId">Search by id:</label>
+            <div className='posts'>
+                <div>
+                    <label htmlFor="searchId">Search by id:</label>
+                    <input
+                        type="text"
+                        placeholder="Search by id"
+                        onChange={(event) => handleChangeOnObject(event, 'id')}
+                        name="id"
+                        id="searchId"
+                    />
+                    <button onClick={() => filterBy("id")}><CiMapPin /></button>
+                </div>
+                <label htmlFor="searchTitle">Search by title:</label>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Search by title"
+                        onChange={(event) => handleChangeOnObject(event, 'title')}
+                        name="title"
+                        id="searchTitle"
+                    />
+                    <button onClick={() => filterBy("title")}><CiMapPin /></button>
+                </div>
+                <div>
+                    <button onClick={() => filterBy("allTodos")}>allPosts</button>
+                </div>
                 <input
                     type="text"
-                    placeholder="Search by id"
-                    onChange={(event) => handleChangeOnObject(event, 'id')}
-                    name="id"
-                    id="searchId"
-                />
-                <button onClick={() => filterBy("id")}><CiMapPin /></button>
+                    placeholder="Add Post"
+                    onChange={(event) => setTitleToAdd(event.target.value)} />
+                <button onClick={() => addPost(titleToAdd)}><IoIosAddCircleOutline /></button>
             </div>
-            <label htmlFor="searchTitle">Search by title:</label>
-            <div>
-                <input
-                    type="text"
-                    placeholder="Search by title"
-                    onChange={(event) => handleChangeOnObject(event, 'title')}
-                    name="title"
-                    id="searchTitle"
-                />
-                <button onClick={() => filterBy("title")}><CiMapPin /></button>
-            </div>
-            <div>
-                <button onClick={() => filterBy("allTodos")}>allPosts</button>
-            </div>
-            <input
-                type="text"
-                placeholder="Add Post"
-                onChange={(event) => setTitleToAdd(event.target.value)} />
-            <button onClick={() => addPost(titleToAdd)}><IoIosAddCircleOutline /></button>
             <ol>
                 {posts2.length && posts2.map((post) => (
-                    <PostsItem key={post.id} post={post} updatePost={updatePost} deletePost={deletePost} id={id}/>
+                    <PostsItem key={post.id} post={post} updatePost={updatePost} deletePost={deletePost} id={id} />
                 ))}
             </ol>
         </div>

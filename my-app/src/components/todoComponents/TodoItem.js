@@ -24,7 +24,7 @@ const TodoItem = ({ todo, updateTodo, deleteTodo }) => {
     };
 
     return (
-        <li >
+        <li className='todos'>
             <>
                 <input
                     type='checkbox'

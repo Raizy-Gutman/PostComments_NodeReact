@@ -23,7 +23,7 @@ const ComentItem = ({ coment, updateComent, deleteComent, email }) => {
   };
 
   return (
-    <li>
+    <li className='comments'>
       <>
         {isEditing ? (
           <>

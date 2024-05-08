@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ComentItem from './ComentItem';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useParams } from 'react-router-dom';
@@ -10,6 +11,7 @@ const Coments = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState(null);
   const [cometsToAdd, setCometsToAdd] = useState({ name: "", body: "" });
+  const navigate = useNavigate();
   const usersInLS = localStorage.getItem('usersInLS');
   const email = usersInLS ? JSON.parse(usersInLS)[0].email : "";
   const API_URL = "http://localhost:8080/comments";
@@ -118,13 +120,17 @@ const Coments = () => {
     }
   }
 
+  const handleGoBack = () => {
+    navigate(-1); // Go back one page
+  };
+
   if (isFetching) {
     return <p>Loading...</p>;
   } else if (fetchError) {
     return <p>ERROR: {fetchError.toString()}</p>;
   } else {
     return (
-      <div>
+      <div className='comments'>
          <h2>Comments:</h2>
          <input
           type="text"
@@ -142,6 +148,7 @@ const Coments = () => {
             ))
           }
         </ol >
+        <button onClick={handleGoBack}>Go Back</button>
       </div>
     );
   }

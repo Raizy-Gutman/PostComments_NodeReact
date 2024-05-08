@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ListTodos from './ListTodos'
 
 const Todos = () => {
@@ -8,6 +9,7 @@ const Todos = () => {
     const [isFetching, setIsFetching] = useState(false);
     const [fetchError, setFetchError] = useState(null);
     const [page, setPage] = useState(1);
+    const navigate = useNavigate();
     const API_URL = "http://localhost:8080/todos";
     useEffect(() => {
         const usersInLS = localStorage.getItem('usersInLS');
@@ -105,18 +107,23 @@ const Todos = () => {
         }
     }
 
+    const handleGoBack = () => {
+        navigate(-1); // Go back one page
+      };
+
     if (isFetching) {
         return <p>Loading...</p>
     } else if (fetchError) {
         return <p>ERROR: {fetchError}</p>
     } else {
         return (
-            <div>
+            <div className='todos'>
                 <h2>Todos:</h2>
                 <ListTodos todos={todos} todosForFilter={todosForFilter} setTodosForFilter={setTodosForFilter} updateTodo={updateTodo} deleteTodo={deleteTodo} addTodo={addTodo} />
                 <p>current page: {page}</p>
                 {todos.length ? <button onClick={() => setPage(page + 1)}>next</button> : <p>There are no more todos.</p>}
                 <button onClick={() => { if (page > 1) setPage(page - 1) }}>prev</button>
+                <button onClick={handleGoBack}>Go Back</button>
             </div>
         )
     }

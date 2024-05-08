@@ -31,6 +31,7 @@ const PostsItem = ({ post, updatePost, deletePost, id }) => {
   }
 
   return (
+    <div>
     <li id='postItem'>
       <>
         {isEditing ? (
@@ -72,7 +73,9 @@ const PostsItem = ({ post, updatePost, deletePost, id }) => {
         )}
       </div>
     </li>
+    </div>
   );
+  
 };
 
 export default PostsItem;

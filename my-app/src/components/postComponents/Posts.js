@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ListPosts from './ListPosts';
 const Posts = () => {
     const id = useRef(0);
@@ -6,6 +7,7 @@ const Posts = () => {
     const [posts2, setPosts2] = useState([]);
     const [isFetching, setIsFetching] = useState(false);
     const [fetchError, setFetchError] = useState(null);
+    const navigate = useNavigate();
     const API_URL = "http://localhost:8080/posts";
     useEffect(() => {
         const usersInLS = localStorage.getItem('usersInLS');
@@ -95,15 +97,20 @@ const Posts = () => {
         }
     }
 
+    const handleGoBack = () => {
+        navigate(-1); // Go back one page
+      };
+
     if (isFetching) {
         return <p>Loading...</p>
     } else if (fetchError) {
         return <p>ERROR: {fetchError}</p>
     } else {
         return (
-            <div>
+            <div  className='posts'>
                 <h2>Posts:</h2>
                 <ListPosts posts={posts} posts2={posts2} setPosts2={setPosts2} addPost={addPost} updatePost={updatePost} deletePost={deletePost} id={id.current}/>
+                <button onClick={handleGoBack}>Go Back</button>
             </div>
         )
     }

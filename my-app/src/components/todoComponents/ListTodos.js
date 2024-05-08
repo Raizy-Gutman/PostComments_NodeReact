@@ -77,7 +77,7 @@ const ListTodos = ({ todos, updateTodo, deleteTodo, addTodo, todosForFilter, set
     }
 
     return (
-        <div>
+        <div className='todos'>
             <label>
                 Order By :
                 <select

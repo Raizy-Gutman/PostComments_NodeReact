@@ -131,7 +131,7 @@ const Register = () => {
         )
     } else {
         return (
-            <div>
+            <div className='register'>
                 {finallRediseration && <Navigate to="/finallRegister" />}
                 <form >
                     <label>Enter a username:</label>

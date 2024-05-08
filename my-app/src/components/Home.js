@@ -12,7 +12,7 @@ const Home = () => {
   };
 
   return (
-    <div>        
+    <div className='home'>        
         <h4>Hello, {user.name}</h4>
         <Link to={`../users/${user.id}/info`}>Info</Link><br/>
         <Link to={`../users/${user.id}/todos`}>Todos</Link><br/>
