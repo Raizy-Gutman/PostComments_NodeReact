@@ -12,7 +12,7 @@ const Coments = () => {
   const [cometsToAdd, setCometsToAdd] = useState({ name: "", body: "" });
   const usersInLS = localStorage.getItem('usersInLS');
   const email = usersInLS ? JSON.parse(usersInLS)[0].email : "";
-  const API_URL = "http://localhost:3300/comments";
+  const API_URL = "http://localhost:8080/comments";
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -51,6 +51,9 @@ const Coments = () => {
 
       const response = await fetch(API_URL, {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify(addNewComent),
       });
 
@@ -59,7 +62,7 @@ const Coments = () => {
       }
 
       const json = await response.json();
-      setComents((prevComents) => [...prevComents, addNewComent]);
+      setComents((prevComents) => [...prevComents, json[0]]);
 
     } catch (error) {
       setFetchError(error.message);
@@ -73,6 +76,9 @@ const Coments = () => {
       setIsFetching(true);
       await fetch(`${API_URL}/${comentUpdate.id}`, {
         method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify(comentUpdate)
       }).then((response) => {
         if (!response.ok) {
@@ -100,8 +106,8 @@ const Coments = () => {
         if (!response.ok) {
           throw new Error('Did not receive expected data');
         }
-        let json = response.json();
-        console.log(json);
+        // let json = response.json();
+        // console.log(json);
         setComents(coments.filter((coment) =>
           coment.id !== idToDelete))
       })

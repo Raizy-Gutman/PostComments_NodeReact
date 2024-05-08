@@ -6,11 +6,7 @@ import { pool } from './db.js';
 export async function getPasswordByUserId(id) {
     try {
         const [rows] = await pool.query("SELECT * FROM passwords WHERE idOfUser = ? ORDER BY created DESC LIMIT 1", [id]);
-        if (rows.length > 0) {
-            return rows[0];
-        } else {
-            return null;
-        }
+        return rows;
     } catch (error) {
         throw new Error(`Error retrieving password for user with ID ${id}: ${error.message}`);
     }

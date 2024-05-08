@@ -1,5 +1,5 @@
-import '../logIn.css'
-import React, { useState } from 'react'
+// import '../logIn.css'
+import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 
 const LogIn = () => {
@@ -8,9 +8,11 @@ const LogIn = () => {
   const [isNewUser, setIsNewUser] = useState(false);
   const [isExist, setIsExist] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [needNewpassword, setNeedNewpassword] = useState(false);
   const [fetchError, setFetchError] = useState(null);
   const [user, setUser] = useState({
-    name: "",
+    id: "",//???????????????????
+    userName: "",
     password: ""
   });
 
@@ -20,7 +22,7 @@ const LogIn = () => {
     try {
 
       setIsFetching(true);
-      const response = await fetch(`http://localhost:8080/users?username=${user.name}&website=${user.password}`);
+      const response = await fetch(`http://localhost:8080/users?username=${user.userName}`);
       if (!response.ok) {
         throw new Error('Did not receive expected data');
       }
@@ -33,11 +35,27 @@ const LogIn = () => {
       setIsFetching(false);
       return resData;
     }
-
   }
 
+  const searchPassword = async (id) => {
+    let resData = [];
+    try {
 
-
+      setIsFetching(true);
+      const response = await fetch(`http://localhost:8080/passwords/${id}`);
+      if (!response.ok) {
+        throw new Error('Did not receive expected data');
+      }
+      resData = await response.json();
+      // setUsers(resData);
+      setFetchError(null);
+    } catch (error) {
+      setFetchError(error.message);
+    } finally {
+      setIsFetching(false);
+      return resData;
+    }
+  }
 
   const handleOnChange = (event, type) => {
     setUser({
@@ -46,6 +64,31 @@ const LogIn = () => {
     })
   }
 
+  const handlenewPassword = async () => {
+    try {
+      setIsFetching(true);
+      const response = await fetch('http://localhost:8080/passwords', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idOfUser: user.id,
+          password: user.password
+        })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create new password');
+      }
+      console.log('The password created successfully');
+      setFetchError(null);
+      setNeedNewpassword(false);
+    } catch (error) {
+      setFetchError(error.message);
+    } finally {
+      setIsFetching(false);
+    }
+  }
 
   const handleSubmit = async () => {
 
@@ -53,36 +96,42 @@ const LogIn = () => {
     console.log(users.length);
     console.log(retData.length);
     if (retData.length > 0) {
-      const userToStorage = {
-        id: retData[0].id,
-        name: retData[0].name,
-        username: retData[0].username,
-        email: retData[0].email,
-        address: {
-          street: retData[0].address.street,
-          suite: retData[0].address.suite,
-          city: retData[0].address.city,
-          zipcode: retData[0].address.zipcode,
-          geo: {
-            lat: retData[0].address.geo.lat,
-            lng: retData[0].address.geo.lng
+      let resdata = await searchPassword(retData[0].id);
+      if (resdata.length > 0 && resdata[0].password === user.password) {
+        setUser({
+          ...user,
+          id: retData[0].id
+        });
+        const currentDate = new Date();
+        const thirtyDaysLater =new Date(resdata[0].created);
+        thirtyDaysLater.setDate(currentDate.getDate() + 30);
+        if (thirtyDaysLater > currentDate) {
+          console.log("The password is still valid");
+          const userToStorage = {
+            id: retData[0].id,
+            name: retData[0].name,
+            username: retData[0].username,
+            email: retData[0].email,
+            address: retData[0].address,
+            phone: retData[0].phone,
+            website: retData[0].website,
+            company: retData[0].company
           }
-        },
-        phone: retData[0].phone,
-        company: {
-          name: retData[0].company.name,
-          catchPhrase: retData[0].company.catchPhrase,
-          bs: retData[0].company.bs
+          localStorage.setItem('usersInLS', JSON.stringify([userToStorage]));
+          setIsExist(true);
+        } else {
+          console.log("The password is no longer valid");
+          setNeedNewpassword(true);
         }
+      }else{
+        setIsNewUser(true);
       }
-      localStorage.setItem('usersInLS', JSON.stringify([userToStorage]));
-      setIsExist(true);
     } else {
       setIsNewUser(true);
     }
   }
 
-  if (isExist) {
+  if (!needNewpassword && isExist) {
     return (
       <Navigate to="/home" />
     )
@@ -101,13 +150,13 @@ const LogIn = () => {
   }
   else {
     return (
-      <div>
+      <div className='login'>
         <form >
           <label>Enter a username:</label>
           <input
             type="text"
             name="username"
-            onChange={(event) => handleOnChange(event, 'name')}
+            onChange={(event) => handleOnChange(event, 'userName')}
             required
           />
 
@@ -115,13 +164,15 @@ const LogIn = () => {
           <input
             type="text"
             name="password"
-            onChange={(event) => handleOnChange(event, 'password')} g
+            onChange={(event) => handleOnChange(event, 'password')}
             required
           />
 
           {isNewUser && <p>User does not exist</p>}
+          {needNewpassword && <p>Enter a new password</p>}
+          {needNewpassword && <button type="button" className='newPassword' onClick={handlenewPassword}>update</button>}
 
-          <button type="button" className='submit' onClick={handleSubmit}>submit</button>
+          {!needNewpassword && <button type="button" className='submit' onClick={handleSubmit}>login</button>}
           <p><i>don't have an account? click to <Link to="/register" >SIGN UP!</Link></i></p>
         </form>
       </div>

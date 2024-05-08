@@ -2,8 +2,9 @@ import { getAllUsers, getUserById, createUser, updateUserById, deleteUserById } 
 
 // Controller function to get all users
 export const getUsers_ = async (req, res) => {
+    const { username } = req.query;//בצורה הזו או כמו בשאר העמודים??????????????...
     try {
-        const users = await getAllUsers();
+        const users = await getAllUsers(username);
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -62,3 +63,7 @@ export const deleteUser_ = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+// const users = getUsers_();
+// console.log(users);

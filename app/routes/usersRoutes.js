@@ -7,21 +7,21 @@ import {
     deleteUser_ as deleteUserHandler
 } from '../controllers/userController.js';
 
-const router = express.Router();
+const userRouter = express.Router();
 
 // Route to get all users
-router.get('/', getUsers_);
+userRouter.get('/', getUsers_);
 
 // Route to get a user by ID
-router.get('/:id', getUser_);
+userRouter.get('/:id', getUser_);
 
 // Route to create a new user
-router.post('/', createUserHandler);
+userRouter.post('/', createUserHandler);
 
 // Route to update a user by ID
-router.put('/:id', updateUserHandler);
+userRouter.put('/:id', updateUserHandler);
 
 // Route to delete a user by ID
-router.delete('/:id', deleteUserHandler);
+userRouter.delete('/:id', deleteUserHandler);
 
-export default router;
+export default userRouter;

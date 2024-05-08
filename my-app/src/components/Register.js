@@ -12,15 +12,16 @@ const Register = () => {
     const [verifyPassword, setVerifyPassword] = useState("");
     const [addUser, setAddUser] = useState({
         username: "",
-        website: ""
+        password: ""
     })
 
     const searchUser = async () => {
         try {
             setIsFetching(true);
             const response = await fetch(`${API_URL}?username=${addUser.username}`);
+            console.log(addUser.username);
             if (!response.ok) {
-                throw new Error('Did not receive expected data');
+                throw new Error('Did not receive expected data111');
             }
             const resData = await response.json();
             setUsers(resData);
@@ -32,18 +33,10 @@ const Register = () => {
         }
     }
 
-
-    const handleChangeName = (event) => {
+    const handleChangeOnObject = (event, type) => {
         setAddUser({
             ...addUser,
-            username: event.target.value
-        })
-    }
-
-    const handleChangePassword = (event) => {
-        setAddUser({
-            ...addUser,
-            website: event.target.value
+            [type]: event.target.value
         })
     }
 
@@ -51,41 +44,76 @@ const Register = () => {
         setVerifyPassword(event.target.value);
     }
 
-    const addToLS = (user) => {
-        const userToLS = {
-            id: user.id
-        }
-        localStorage.setItem('usersInLS', JSON.stringify([userToLS]));
-    }
-
-    const handlePost = async () => {
+    const handlePostPassword = async (id) => {
         try {
-            const response = await fetch(API_URL, {
+            console.log(id);
+            const response = await fetch('http://localhost:8080/passwords', {
                 method: 'POST',
-                body: JSON.stringify(addUser),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    idOfUser: id,
+                    password: addUser.password
+                }),
             });
-    
+
             if (!response.ok) {
-                throw new Error('Did not receive expected data');
+                throw new Error('Did not receive expected data222');
             }
-    
+
             const json = await response.json();
             console.log(json);
-            addToLS(json);
             setFinallRediseration(true);
         } catch (error) {
             setFetchError(error.message);
         }
     }
-    
+
+    const addToLS = (user) => {
+        console.log(user);
+        console.log("================")
+        console.log(user[0]);
+        const userToLS = {
+            id: user[0].id,
+            username: user[0].username
+        }
+        localStorage.setItem('usersInLS', JSON.stringify([userToLS]));
+        handlePostPassword(user[0].id);
+    }
+
+    const handlePostUser = async () => {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: addUser.username
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Did not receive expected data333');
+            }
+
+            const json = await response.json();
+            console.log(json);
+            addToLS(json);
+        } catch (error) {
+            setFetchError(error.message);
+        }
+    }
+
 
     const handleOnSubmit = () => {
-        if (addUser.website !== verifyPassword) {
+        if (addUser.password !== verifyPassword) {
             setWrong("ERROR: Try again");
         } else {
             searchUser();
             if (users.length === 0) {
-                handlePost();
+                handlePostUser();
             }
             else {
                 setWrong("ERROR: Try again");
@@ -110,7 +138,7 @@ const Register = () => {
                     <input
                         type="text"
                         name="username"
-                        onChange={handleChangeName}
+                        onChange={(event) => handleChangeOnObject(event, 'username')}
                         required
                     />
 
@@ -118,7 +146,7 @@ const Register = () => {
                     <input
                         type="text"
                         name="password"
-                        onChange={handleChangePassword}
+                        onChange={(event) => handleChangeOnObject(event, 'password')}
                         required
                     />
 

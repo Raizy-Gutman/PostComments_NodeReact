@@ -2,8 +2,9 @@ import { getAllComments, getCommentsByPostId, getCommentById, createComment, upd
 
 // Controller function to retrieve all comments
 export const getAllComments_ = async (req, res) => {
+    const { postId } = req.query;
     try {
-        const comments = await getAllComments();
+        const comments = await getAllComments(postId);
         res.status(200).json(comments);
     } catch (error) {
         res.status(500).json({ error: error.message });

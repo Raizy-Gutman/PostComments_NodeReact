@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { FaTrashAlt, FaEdit } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const PostsItem = ({ post, updatePost, deletePost }) => {
+const PostsItem = ({ post, updatePost, deletePost, id }) => {
   const [isEditing, setEditing] = useState(false);
   const [toShow, setToShow] = useState(false);
   const [allDetailsPost, setAllDetailsPost] = useState(false);
   const [updatedTitle, setUpdatedTitle] = useState(post.title);
   const [updatedBody, setUpdatedBody] = useState(post.body);
+
+  const sameUser = post.user_id === id;
 
   const handleUpdateButton = () => {
     setEditing(true);
@@ -60,12 +62,12 @@ const PostsItem = ({ post, updatePost, deletePost }) => {
         ) : (
           <div>
             <button onClick={() => onClick()}>Read more</button>
-            <button className='todoButton' onClick={() => deletePost(post.id)}>
+            {sameUser && <button className='todoButton' onClick={() => deletePost(post.id)}>
               <FaTrashAlt />
-            </button>
-            <button className='todoButton' onClick={handleUpdateButton}>
+            </button>}
+            {sameUser && <button className='todoButton' onClick={handleUpdateButton}>
               <FaEdit />
-            </button>
+            </button>}
           </div>
         )}
       </div>

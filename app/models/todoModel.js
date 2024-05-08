@@ -3,10 +3,16 @@ import { pool } from './db.js';
 //--------------todos-----------------
 
 // Get all todos
-export async function getAllTodos() {
+export async function getAllTodos(userId = 0, sort='id') {//?????????????????????????????=0???/
     try {
-        const [rows] = await pool.query("SELECT * FROM todos");
-        return rows;
+        if(userId !== 0){
+            const [rows] = await pool.query("SELECT * FROM todos WHERE userId = ? ORDER BY " + sort, [userId]);
+            return rows;
+        }else{
+            const [rows] = await pool.query("SELECT * FROM todos ORDER BY " + sort);
+            return rows;
+        }
+        
     } catch (error) {
         throw new Error(`Error fetching todos: ${error.message}`);
     }
@@ -26,7 +32,7 @@ export async function getTodosByUserId(userId) {
 export async function getTodoById(id) {
     try {
         const [rows] = await pool.query("SELECT * FROM todos WHERE id = ?", [id]);
-        return rows[0];
+        return rows;
     } catch (error) {
         throw new Error(`Error fetching todo: ${error.message}`);
     }
@@ -62,6 +68,7 @@ export async function updateTodoById(id, title, completed) {
 export async function deleteTodoById(id) {
     try {
         const [result] = await pool.query("DELETE FROM todos WHERE id = ?", [id]);
+        console.log(result.affectedRows);
         if (result.affectedRows === 1) {
             return true;
         } else {

@@ -2,8 +2,9 @@ import { getAllPosts, getPostsByUserId, getPostById, createPost, updatePost, del
 
 // Controller function to get all posts
 export const getPosts_ = async (req, res) => {
+    const { userId } = req.query;
     try {
-        const posts = await getAllPosts();
+        const posts = await getAllPosts(userId);
         res.status(200).json(posts);
     } catch (error) {
         res.status(500).json({ error: error.message });

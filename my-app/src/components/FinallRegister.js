@@ -4,34 +4,21 @@ import { Navigate } from 'react-router-dom';
 const FinallRegister = () => {
   const API_URL = "http://localhost:8080/users/";
   const id = JSON.parse(localStorage.getItem('usersInLS'))[0].id;
+  const username = JSON.parse(localStorage.getItem('usersInLS'))[0].username;
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState(null);
   const [homePage, setHomePage] = useState(false);
 
-  console.log(id);
-
+  console.log(username);
 
   const [newUser, setNewUser] = useState({
     name: "",
-    username: "",
     email: "",
-    address: {
-      street: "",
-      suite: "",
-      city: "",
-      zipcode: "",
-      geo: {
-        lat: "",
-        lng: ""
-      }
-    },
+    username: username,
+    address: "",
     phone: "",
     website: "",
-    company: {
-      name: "",
-      catchPhrase: "",
-      bs: ""
-    }
+    company: ""
   })
 
   // useEffect(() => {
@@ -43,10 +30,11 @@ const FinallRegister = () => {
         throw new Error('Did not receive expected data');
       }
       const resData = await response.json();
+      console.log(resData[0]);
+      console.log(resData);
       setNewUser({
         ...newUser,
-        username: [resData.username],
-        website: `${resData.website}`
+        username: [resData[0].username]
       });
       setFetchError(null);
     } catch (error) {
@@ -60,6 +48,9 @@ const FinallRegister = () => {
     await searchUser()
     fetch(`${API_URL}${id}`, {
       method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+      },
       body: JSON.stringify(newUser)
     })
       .then((response) => {
@@ -70,22 +61,10 @@ const FinallRegister = () => {
           name: newUser.name,
           username: newUser.username,
           email: newUser.email,
-          address: {
-            street: newUser.address.street,
-            suite: newUser.address.suite,
-            city: newUser.address.city,
-            zipcode: newUser.address.zipcode,
-            geo: {
-              lat: newUser.address.geo.lat,
-              lng: newUser.address.geo.lng
-            }
-          },
+          address: newUser.address,
           phone: newUser.phone,
-          company: {
-            name: newUser.company.name,
-            catchPhrase: newUser.company.catchPhrase,
-            bs: newUser.company.bs
-          }
+          website: newUser.website,
+          company: newUser.company
         }
         localStorage.setItem('usersInLS', JSON.stringify([userToLS]));
         setHomePage(true);
@@ -99,38 +78,7 @@ const FinallRegister = () => {
     })
   }
 
-  const handleChangeOnAddress = (event, type) => {
-    setNewUser({
-      ...newUser,
-      address: {
-        ...newUser.address,
-        [type]: event.target.value
-      }
-    })
-  }
-
-  const handleChangeOnGeo = (event, type) => {
-    setNewUser({
-      ...newUser,
-      address: {
-        ...newUser.address,
-        geo: {
-          ...newUser.address.geo,
-          [type]: event.target.value
-        }
-      }
-    })
-  }
-
-  const handleChangeOnCompany = (event, type) => {
-    setNewUser({
-      ...newUser,
-      company: {
-        ...newUser.company,
-        [type]: event.target.value
-      }
-    })
-  }
+  
   if (homePage) {
     return <Navigate to={'/home'} />
   }
@@ -163,51 +111,11 @@ const FinallRegister = () => {
             required
           />
 
-          <label>Enter your street:</label>
+          <label>Enter your address:</label>
           <input
             type="text"
             name="street"
-            onChange={(event) => handleChangeOnAddress(event, 'street')}
-            required
-          />
-
-          <label>Enter your suite:</label>
-          <input
-            type="text"
-            name="suite"
-            onChange={(event) => handleChangeOnAddress(event, 'suite')}
-            required
-          />
-
-          <label>Enter your city:</label>
-          <input
-            type="text"
-            name="city"
-            onChange={(event) => handleChangeOnAddress(event, 'city')}
-            required
-          />
-
-          <label>Enter your zipcode:</label>
-          <input
-            type="text"
-            name="zipcode"
-            onChange={(event) => handleChangeOnAddress(event, 'zipcode')}
-            required
-          />
-
-          <label>Enter your lat:</label>
-          <input
-            type="text"
-            name="lat"
-            onChange={(event) => handleChangeOnGeo(event, 'lat')}
-            required
-          />
-
-          <label>Enter your lng:</label>
-          <input
-            type="text"
-            name="lng"
-            onChange={(event) => handleChangeOnGeo(event, 'lng')}
+            onChange={(event) => handleChangeOnObject(event, 'address')}
             required
           />
 
@@ -219,27 +127,19 @@ const FinallRegister = () => {
             required
           />
 
+          <label>Enter your website:</label>
+          <input
+            type="text"
+            name="phone"
+            onChange={(event) => handleChangeOnObject(event, 'website')}
+            required
+          />
+
           <label>Enter your name of company:</label>
           <input
             type="text"
             name="nameOfCompany"
-            onChange={(event) => handleChangeOnCompany(event, 'name')}
-            required
-          />
-
-          <label>Enter catchPhrase:</label>
-          <input
-            type="text"
-            name="catchPhrase"
-            onChange={(event) => handleChangeOnCompany(event, 'catchPhrase')}
-            required
-          />
-
-          <label>Enter bs:</label>
-          <input
-            type="text"
-            name="bs"
-            onChange={(event) => handleChangeOnCompany(event, 'bs')}
+            onChange={(event) => handleChangeOnObject(event, 'company')}
             required
           />
 

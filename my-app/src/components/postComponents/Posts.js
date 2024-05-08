@@ -6,11 +6,11 @@ const Posts = () => {
     const [posts2, setPosts2] = useState([]);
     const [isFetching, setIsFetching] = useState(false);
     const [fetchError, setFetchError] = useState(null);
-    const API_URL = "http://localhost:3300/posts";
+    const API_URL = "http://localhost:8080/posts";
     useEffect(() => {
         const usersInLS = localStorage.getItem('usersInLS');
         id.current = usersInLS ? JSON.parse(usersInLS)[0].id : null;
-        fetch(`${API_URL}?userId=${id.current}`, {
+        fetch(`${API_URL}`, {
             method: "GET",
         })
             .then((response) => response.json())
@@ -22,12 +22,15 @@ const Posts = () => {
         try {
             setIsFetching(true);
             const addNewPost = {
-                userId: id.current,
+                user_id: id.current,
                 title: title,
-                body: ""
+                body: "fill the body of post"
             };
             const response = await fetch(API_URL, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify(addNewPost),
             });
 
@@ -37,7 +40,7 @@ const Posts = () => {
 
             const json = await response.json();
             console.log(json);
-            setPosts((prevPosts) => [...prevPosts, addNewPost]);
+            setPosts((prevPosts) => [...prevPosts, json[0]]);
         } catch (error) {
             setFetchError(error.message);
         } finally {
@@ -50,6 +53,9 @@ const Posts = () => {
             setIsFetching(true);
             await fetch(`${API_URL}/${postUpdate.id}`, {
                 method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 body: JSON.stringify(postUpdate)
             }).then((response) => {
                 if (!response.ok) {
@@ -77,8 +83,8 @@ const Posts = () => {
                 if (!response.ok) {
                     throw new Error('Did not receive expected data');
                 }
-                let json = response.json();
-                console.log(json);
+                // let json = response.json();
+                // console.log(json);
                 setPosts(posts.filter((post) =>
                     post.id !== idToDelete))
             })
@@ -97,7 +103,7 @@ const Posts = () => {
         return (
             <div>
                 <h2>Posts:</h2>
-                <ListPosts posts={posts} posts2={posts2} setPosts2={setPosts2} addPost={addPost} updatePost={updatePost} deletePost={deletePost} />
+                <ListPosts posts={posts} posts2={posts2} setPosts2={setPosts2} addPost={addPost} updatePost={updatePost} deletePost={deletePost} id={id.current}/>
             </div>
         )
     }

@@ -3,10 +3,16 @@ import { pool } from './db.js';
 //--------------posts-----------------
 
 // Retrieve all posts
-export async function getAllPosts() {
+export async function getAllPosts(user_id = 0) {//???????????????????????????/00?
     try {
-        const [rows] = await pool.query("SELECT * FROM posts");
-        return rows;
+        if (user_id !== 0){
+            const [rows] = await pool.query("SELECT * FROM posts WHERE user_id = ?", [id]);
+            return rows;
+        }else{
+            const [rows] = await pool.query("SELECT * FROM posts");
+            return rows;
+        }
+        
     } catch (error) {
         throw new Error(`Error retrieving posts: ${error.message}`);
     }
@@ -26,7 +32,7 @@ export async function getPostsByUserId(id) {
 export async function getPostById(id) {
     try {
         const [rows] = await pool.query("SELECT * FROM posts WHERE id = ?", [id]);
-        return rows[0];
+        return rows;
     } catch (error) {
         throw new Error(`Error retrieving post with ID ${id}: ${error.message}`);
     }

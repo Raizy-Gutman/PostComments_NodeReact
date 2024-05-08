@@ -17,7 +17,6 @@ const Home = () => {
         <Link to={`../users/${user.id}/info`}>Info</Link><br/>
         <Link to={`../users/${user.id}/todos`}>Todos</Link><br/>
         <Link to={`../users/${user.id}/posts`}>Posts</Link><br/>
-        <Link to={`../users/${user.id}/albums`}>Albums</Link><br/>
         <Link to="#" onClick={handleLogout}>Logout</Link><br/>
     </div>
   )

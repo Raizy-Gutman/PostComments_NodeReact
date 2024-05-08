@@ -3,10 +3,16 @@ import { pool } from './db.js';
 //--------------comments-----------------
 
 // Retrieve all comments
-export async function getAllComments() {
+export async function getAllComments(postId = 0) {
     try {
-        const [rows] = await pool.query("SELECT * FROM comments");
-        return rows;
+        if(postId !== 0){
+            const [rows] = await pool.query("SELECT * FROM comments WHERE postId = ?", [postId]);
+            return rows;
+        }else{
+            const [rows] = await pool.query("SELECT * FROM comments");
+            return rows;
+        }
+        
     } catch (error) {
         throw new Error(`Error retrieving comments: ${error.message}`);
     }
@@ -26,7 +32,7 @@ export async function getCommentsByPostId(id) {
 export async function getCommentById(id) {
     try {
         const [rows] = await pool.query("SELECT * FROM comments WHERE id = ?", [id]);
-        return rows[0];
+        return rows;
     } catch (error) {
         throw new Error(`Error retrieving comment with ID ${id}: ${error.message}`);
     }

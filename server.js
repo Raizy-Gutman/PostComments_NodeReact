@@ -128,11 +128,11 @@
 
 
 
-
+//להחזיר לקדמותו:
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import usersRoutes from './app/routes/usersRoutes.js';
+import userRouter from './app/routes/usersRoutes.js';
 import todosRoutes from './app/routes/todosRoutes.js';
 import postsRoutes from './app/routes/postsRoutes.js';
 import passwordsRoutes from './app/routes/passwordsRoutes.js';
@@ -141,7 +141,12 @@ import commentsRoutes from './app/routes/commentsRoutes.js';
 const app = express();
 
 dotenv.config({ path: './app/config/.env' });
+// Middleware
 const PORT = process.env.PORT || 3000;
+app.use((req,res,next)=>{
+  console.log("hello"+req.params)
+  next()
+});
 
 // Middleware
 app.use(cors()); // Enable CORS for all origins
@@ -149,11 +154,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/users', usersRoutes);
-app.use('/api/todos', todosRoutes);
-app.use('/api/posts', postsRoutes);
-app.use('/api/passwords', passwordsRoutes);
-app.use('/api/comments', commentsRoutes);
+app.use('/users', userRouter);
+app.use('/todos', todosRoutes);
+app.use('/posts', postsRoutes);
+app.use('/passwords', passwordsRoutes);
+app.use('/comments', commentsRoutes);
 
 // Default route
 app.get("/", (req, res) => {

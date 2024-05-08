@@ -3,10 +3,15 @@ import { pool } from './db.js';
 //--------------users-----------------
 
 // Get all users
-export async function getAllUsers() {
+export async function getAllUsers(username = "") {
     try {
-        const [rows] = await pool.query("SELECT * FROM users");
-        return rows;
+        if (username !== "") {
+            const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [username]);
+            return rows;
+        } else {
+            const [rows] = await pool.query("SELECT * FROM users");
+            return rows;
+        }
     } catch (error) {
         throw new Error(`Error fetching users: ${error.message}`);
     }
@@ -16,7 +21,7 @@ export async function getAllUsers() {
 export async function getUserById(id) {
     try {
         const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
-        return rows[0];
+        return rows;
     } catch (error) {
         throw new Error(`Error fetching user: ${error.message}`);
     }
@@ -51,7 +56,7 @@ export async function updateUserById(id, { name, username, email, address, phone
             company = ?
             WHERE id = ?
         `, [name, username, email, address, phone, website, company, id]);
-        
+
         if (result.affectedRows === 1) {
             return getUserById(id);
         } else {
@@ -75,3 +80,6 @@ export async function deleteUserById(id) {
         throw new Error(`Error deleting user: ${error.message}`);
     }
 }
+
+// const users = await getAllUsers();
+// console.log(users);

@@ -72,3 +72,15 @@ input,select{
   grid-template-rows: auto auto ;
   margin-bottom: 10px;
 }
+
+.login{
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  border: 1px solid rgb(218, 156, 156);
+  padding: 20px;
+  border-radius: 5px;
+}
