@@ -95,6 +95,7 @@ const LogIn = () => {
     let retData = await searchUser();
     console.log(users.length);
     console.log(retData.length);
+    console.log(retData);
     if (retData.length > 0) {
       let resdata = await searchPassword(retData[0].id);
       if (resdata.length > 0 && resdata[0].password === user.password) {
